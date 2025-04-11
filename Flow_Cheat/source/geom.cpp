@@ -63,7 +63,7 @@ Vec3 OpenGLWorldToScreen(Vec3& pos, const float matrix[16], int windowWidth, int
 Vec3 OpenGLWorldToScreen(Vec3& pos) {
     // viewMatrix is probably wrong so fix that since the function isnt working
 	vec3 screen;
-	if (OpenGLWorldToScreen(pos, screen, viewMatrix, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+	if (OpenGLWorldToScreen(pos, screen, viewMatrix, 1920, 1080))
 		return screen;
 	return vec3(0.0f, 0.0f, 0.0f);
 }

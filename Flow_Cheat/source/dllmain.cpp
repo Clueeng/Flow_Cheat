@@ -34,7 +34,6 @@ void aimbot() {
     while (true) {
         resetPointers();
         esp::aimbot();
-		esp::esp();
         Sleep(50);
         if(GetAsyncKeyState(VK_DELETE) & 1)
 			Menu::ToggleMenu();
@@ -47,6 +46,11 @@ void hook() {
 	DetourUpdateThread(GetCurrentThread());
 	DetourAttach(&(PVOID&)oSwapBuffers, Menu::newSwapBuffers);
     DetourTransactionCommit();
+
+    while (true) {
+        esp::esp();
+        Sleep(33);
+    }
 }
 
 bool fly = FALSE;

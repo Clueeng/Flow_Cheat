@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "settings.h"
 #include "imgui.h"
+#include "imgui/imgui_impl_opengl2.h"
 
 const float FOV = 90.0f;
 
@@ -108,18 +109,18 @@ void esp::esp()
 
 		Vec3 headPos = {
 			player->Position.normalize().x,
-			player->Position.normalize().y - player->EyeHeight,
+			player->Position.normalize().y,
 			player->Position.normalize().z
 		};
 		Vec3 feetPos = {
 			player->Position.normalize().x,
-			player->Position.normalize().y,
+			player->Position.normalize().y - player->EyeHeight,
 			player->Position.normalize().z
 		};								// obviously isn't a thing in esp.cpp
 		Vec3 headScreenPos = OpenGLWorldToScreen(headPos);
 		Vec3 feetScreenPos = OpenGLWorldToScreen(feetPos);
 		if (headScreenPos.x == 0 && headScreenPos.y == 0) {
-			OutputDebugStringA("0,0");
+			OutputDebugStringA("0,0\n");
 			continue;
 		}
 
@@ -144,7 +145,20 @@ void esp::esp()
 			OutputDebugStringA("Points are not sane\n");
 			continue;
 		}
-		ImGui::GetBackgroundDrawList()->AddQuad(topLeft, topRight, bottomRight, bottomLeft, color, 1.0f);
+
+		if (ImGui::GetBackgroundDrawList() == nullptr) continue;
+		OutputDebugStringA("1\n");
+		OutputDebugStringA("2\n");
+		//if (ImGui::GetBackgroundDrawList()->_VtxWritePtr == nullptr) continue;
+		OutputDebugStringA("3\n");
+		//if (ImGui::GetBackgroundDrawList()->_Data == nullptr) continue;
+		OutputDebugStringA("4\n");
+		if (ImGui::GetBackgroundDrawList()->CmdBuffer.Size == 0) continue;
+
+		OutputDebugStringA("Drawing\n");
+		ImGui::GetBackgroundDrawList()->CmdBuffer.push_back(ImDrawCmd());
+		ImGui::GetBackgroundDrawList()->AddQuad(topLeft, bottomLeft, bottomRight, topRight, color, 1.0f);
 		ImGui::GetBackgroundDrawList()->AddText(ImVec2(10, 40), color, player->Name);
+
 	}
 }
