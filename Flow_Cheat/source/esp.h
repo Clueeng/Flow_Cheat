@@ -6,7 +6,4 @@ namespace esp {
 	PlayerEntity* getNearestAngleEntity();
 	void aimbot();
 	void esp();
-
-	extern bool aimbotToggled;
-	extern bool espToggled;
 }

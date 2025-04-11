@@ -34,6 +34,7 @@ void aimbot() {
     while (true) {
         resetPointers();
         esp::aimbot();
+		esp::esp();
         Sleep(50);
         if(GetAsyncKeyState(VK_DELETE) & 1)
 			Menu::ToggleMenu();
@@ -113,7 +114,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)console, nullptr, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)hook, nullptr, 0, nullptr);
         CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)aimbot, nullptr, 0, nullptr);
         break; 

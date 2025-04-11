@@ -2,6 +2,8 @@
 #include <cmath>
 #include <string>
 #include <format>
+#include "imgui.h"
+#include "constant.h"
 
 // Calculates clip coordinates based on OpenGL's model-view-projection matrix and converts them to screen space
 bool OpenGLWorldToScreen(vec3 pos, vec3& screen, const float matrix[16], int windowWidth, int windowHeight)
@@ -58,6 +60,14 @@ Vec3 OpenGLWorldToScreen(Vec3& pos, const float matrix[16], int windowWidth, int
     return vec3(0.0f, 0.0f, 0.0f); // Return a default vector if not visible
 }
 
+Vec3 OpenGLWorldToScreen(Vec3& pos) {
+    // viewMatrix is probably wrong so fix that since the function isnt working
+	vec3 screen;
+	if (OpenGLWorldToScreen(pos, screen, viewMatrix, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y))
+		return screen;
+	return vec3(0.0f, 0.0f, 0.0f);
+}
+
 Vec3 DirectXWorldToScreen(Vec3& pos, const float matrix[16], int windowWidth, int windowHeight)
 {
     vec3 screen;
@@ -67,10 +77,10 @@ Vec3 DirectXWorldToScreen(Vec3& pos, const float matrix[16], int windowWidth, in
 }
 
 // Gets the angle of a ray from origin to target // InvertPitch means looking up leads to negative pitch
-Vec3 CalcAngle(const Vec3& origin, const Vec3& target, bool invertYaw, bool invertPitch)
+Vector3f CalcAngle(const Vector3f& origin, const Vector3f& target, bool invertYaw, bool invertPitch)
 {
-    Vec3 results{ 0.0f, 0.0f, 0.0f };
-    Vec3 delta = target - origin; // Get the difference between the two vectors
+    Vector3f results{ 0.0f, 0.0f, 0.0f };
+    Vector3f delta = target - origin; // Get the difference between the two vectors
 
     float distance = origin.Distance(target);
     if (distance == 0.0f) // Prevent division by zero

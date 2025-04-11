@@ -8,6 +8,7 @@ extern uintptr_t exeBaseAddress;
 extern PlayerEntity* playerPtr;
 extern EntityList* players;
 extern uintptr_t* playerCount;
+extern float* viewMatrix;
 
 void resetPointers();
 

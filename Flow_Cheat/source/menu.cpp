@@ -10,6 +10,7 @@
 #include "imgui/imgui_impl_opengl2.h"
 #include <iostream>
 #include "esp.h"
+#include "settings.h"
 
 const ImVec2 windowSize = ImVec2(400, 300);
 bool showMenu = false;
@@ -48,6 +49,9 @@ void Menu::ToggleMenu()
 {
 	OutputDebugStringA("Pressed key for ImGUI");
 	showMenu = !showMenu;
+
+	oSetRelativeMouseMode(!showMenu);
+	
 	ImGuiIO& io = ImGui::GetIO();
 	if (!ImGui::GetCurrentContext()) {
 		OutputDebugStringA("ImGui context not created!");
@@ -102,14 +106,10 @@ void Menu::Render()
 	//if (ImGui::Button("Aimbot")) {
 	//	playerPtr->Position.y += 10.0f;
 	//}
-	if (ImGui::Checkbox("Aimbot", &esp::aimbotToggled)) {
-		if (esp::aimbotToggled) {
-			std::cout << "Aimbot enabled" << std::endl;
-		}
-		else {
-			std::cout << "Aimbot disabled" << std::endl;
-		}
-	}
+	ImGui::Checkbox("Aimbot", &Settings::Aimbot::enabled);
+	ImGui::Checkbox("ESP", &Settings::ESP::enabled);
+	ImGui::Text("Teleport");
+	ImGui::Checkbox("Show Teams", &Settings::ESP::drawTeams);
 
 
 	ImGui::Text("Teleport");
