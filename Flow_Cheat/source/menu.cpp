@@ -162,6 +162,9 @@ BOOL __stdcall Menu::newSwapBuffers(HDC hdc)
 	wglMakeCurrent(hdc, myContext);
 
 	Menu::StartRender();
+
+	esp::esp();
+
 	Menu::Render();
 	Menu::EndRender();
 

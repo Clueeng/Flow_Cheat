@@ -11,7 +11,7 @@ public:
 	float y;
 	Vector3() : x(0.0f), z(0.0f), y(0.0f) {}
 	Vector3(float x, float z, float y) : x(x), z(z), y(y) {}
-	Vector3f normalize() {
+	Vector3f fixCoordinates() const {
 		return Vector3f(x, z, y);
 	}
 };

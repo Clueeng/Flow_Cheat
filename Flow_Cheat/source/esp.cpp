@@ -32,7 +32,7 @@ PlayerEntity* esp::getNearestEntity() {
 		PlayerEntity* player = players->players[i];
 		if (player == playerPtr) continue;
 		if (player->Team == playerPtr->Team) continue;
-		float distance = playerPtr->Position.normalize().Distance(player->Position.normalize());
+		float distance = playerPtr->Position.fixCoordinates().Distance(player->Position.fixCoordinates());
 		if (distance < closestDistance) {
 			closestDistance = distance;
 			nearestPlayer = player;
@@ -52,14 +52,14 @@ void esp::aimbot() {
 		Vector3 targetPos = target->Position;
 		Vector3 playerPos = playerPtr->Position;
 
-		std::string debug = std::to_string(targetPos.normalize().x) + ", " + std::to_string(targetPos.normalize().y) + ", " + std::to_string(targetPos.normalize().z);
+		std::string debug = std::to_string(targetPos.fixCoordinates().x) + ", " + std::to_string(targetPos.fixCoordinates().y) + ", " + std::to_string(targetPos.fixCoordinates().z);
 		std::string debug2 = std::to_string(targetPos.x) + ", " + std::to_string(targetPos.y) + ", " + std::to_string(targetPos.z);
 		OutputDebugStringA(debug.c_str());
 		OutputDebugStringA(debug2.c_str());
 
 		std::cout << "aimbotting at " << targetPos.x << ", " << targetPos.y << ", " << targetPos.z;
-		std::cout << "aimbotting at " << targetPos.normalize().x << ", " << targetPos.normalize().y << ", " << targetPos.normalize().z;
-		Vec3 angle = CalcAngle(playerPos.normalize(), targetPos.normalize());
+		std::cout << "aimbotting at " << targetPos.fixCoordinates().x << ", " << targetPos.fixCoordinates().y << ", " << targetPos.fixCoordinates().z;
+		Vec3 angle = CalcAngle(playerPos.fixCoordinates(), targetPos.fixCoordinates());
 		playerPtr->Yaw = angle.x + 90;
 		playerPtr->Pitch = angle.y;
 	}
@@ -81,13 +81,11 @@ bool areSane(ImVec2 vec1, ImVec2 vec2, ImVec2 vec3, ImVec2 vec4) {
 void esp::esp()
 {
 	if (!Settings::ESP::enabled) {
-		OutputDebugStringA("ESP Disabled\n");
 		return;
 	}
 	bool teammate = false;
 
 	if (players == nullptr) {
-		OutputDebugStringA("Players pointer is null\n");
 		return;
 	}
 
@@ -99,7 +97,6 @@ void esp::esp()
 
 		PlayerEntity* player = players->players[i];
 		if (player == nullptr || player->vTable == nullptr) {
-			OutputDebugStringA("Didnt find entity\n");
 			continue;
 		}
 		teammate = player->Team == playerPtr->Team;
@@ -108,15 +105,15 @@ void esp::esp()
 		}
 
 		Vec3 headPos = {
-			player->Position.normalize().x,
-			player->Position.normalize().y,
-			player->Position.normalize().z
+			player->Position.fixCoordinates().x,
+			player->Position.fixCoordinates().y,
+			player->Position.fixCoordinates().z
 		};
 		Vec3 feetPos = {
-			player->Position.normalize().x,
-			player->Position.normalize().y - player->EyeHeight,
-			player->Position.normalize().z
-		};								// obviously isn't a thing in esp.cpp
+			player->Position.fixCoordinates().x,
+			player->Position.fixCoordinates().y - player->EyeHeight,
+			player->Position.fixCoordinates().z
+		};
 		Vec3 headScreenPos = OpenGLWorldToScreen(headPos);
 		Vec3 feetScreenPos = OpenGLWorldToScreen(feetPos);
 		if (headScreenPos.x == 0 && headScreenPos.y == 0) {
@@ -137,28 +134,20 @@ void esp::esp()
 			+ "(" + std::to_string(topRight.x) + ", " + std::to_string(topRight.y) + ") " 
 			+ "( " + std::to_string(bottomLeft.x) + ", " + std::to_string(bottomLeft.y) + ") "
 			+ "( " + std::to_string(bottomRight.x) + ", " + std::to_string(bottomRight.y) + ") \n";
-		OutputDebugStringA(debug.c_str());
 
 		ImColor color = teammate ? *Settings::ESP::teamColor : *Settings::ESP::enemyColor;
 
 		if (!areSane(topLeft, topRight, bottomLeft, bottomRight)) {
-			OutputDebugStringA("Points are not sane\n");
 			continue;
 		}
 
 		if (ImGui::GetBackgroundDrawList() == nullptr) continue;
-		OutputDebugStringA("1\n");
-		OutputDebugStringA("2\n");
-		//if (ImGui::GetBackgroundDrawList()->_VtxWritePtr == nullptr) continue;
-		OutputDebugStringA("3\n");
-		//if (ImGui::GetBackgroundDrawList()->_Data == nullptr) continue;
-		OutputDebugStringA("4\n");
 		if (ImGui::GetBackgroundDrawList()->CmdBuffer.Size == 0) continue;
 
 		OutputDebugStringA("Drawing\n");
-		ImGui::GetBackgroundDrawList()->CmdBuffer.push_back(ImDrawCmd());
 		ImGui::GetBackgroundDrawList()->AddQuad(topLeft, bottomLeft, bottomRight, topRight, color, 1.0f);
-		ImGui::GetBackgroundDrawList()->AddText(ImVec2(10, 40), color, player->Name);
+		//int _middle = (int)(topLeft.x) + ImGui::;
+		//ImGui::GetBackgroundDrawList()->AddText(ImVec2(_middle, topLeft.y), color, player->Name);
 
 	}
 }

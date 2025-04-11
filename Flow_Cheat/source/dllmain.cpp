@@ -46,11 +46,6 @@ void hook() {
 	DetourUpdateThread(GetCurrentThread());
 	DetourAttach(&(PVOID&)oSwapBuffers, Menu::newSwapBuffers);
     DetourTransactionCommit();
-
-    while (true) {
-        esp::esp();
-        Sleep(33);
-    }
 }
 
 bool fly = FALSE;
